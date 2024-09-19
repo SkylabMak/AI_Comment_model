@@ -5,12 +5,13 @@ from transformers import BertTokenizer
 
 app = Flask(__name__)
 
-# Set the device to CUDA (GPU) if available, else use CPU
-# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-device = 'cpu'
+# Set the device to CPU because Render is a CPU-only environment
+device = torch.device('cpu')
 
-# Load the PyTorch model saved with joblib and move it to the device
+# Load the PyTorch model saved with joblib and map it to CPU
 model = joblib.load('model/bert_text_classification_model.joblib')
+
+# Ensure the model is loaded on the CPU
 model.to(device)
 model.eval()  # Set the model to evaluation mode
 
@@ -25,7 +26,7 @@ def transformerModel(text):
     # Tokenize input text using the same tokenizer used during training
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True)
 
-    # Move the input tensors to the correct device (GPU or CPU)
+    # Move the input tensors to the correct device (CPU in this case)
     inputs = {key: value.to(device) for key, value in inputs.items()}
 
     # Run the model to get predictions
