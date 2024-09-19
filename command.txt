@@ -1,0 +1,9 @@
+git config --global http.postBuffer 524288000  # 500 MB
+
+git lfs install
+git lfs track "*.joblib"
+git lfs track "model/bert_text_classification_model.joblib"
+git add .gitattributes  # This file was created by git lfs track
+git add model/bert_text_classification_model.joblib
+git commit -m "Track large model files with Git LFS"
+git push origin main
