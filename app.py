@@ -41,7 +41,7 @@ def transformerModel(text):
     return predicted_label
 
 def blstm(text):
-    return "BLSTM model logic not implemented"
+    return -1
 
 # API route to predict based on input text
 @app.route('/predict', methods=['POST'])
