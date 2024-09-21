@@ -1,26 +1,26 @@
 from flask import Flask, request, jsonify
-import joblib
 import torch
-from transformers import BertTokenizer
+from transformers import BertTokenizer, BertForSequenceClassification
 
 app = Flask(__name__)
 
 # Set the device to CPU because Render is a CPU-only environment
 device = torch.device('cpu')
 
-# Load the PyTorch model saved with joblib and map it to CPU
-model = joblib.load('model/bert_text_classification_model.joblib')
+# Load the model's architecture and state dict from the .pth file
+model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=6)  # Ensure num_labels matches your training
+model.load_state_dict(torch.load('model/bert_text_classification_model.pth', map_location=device))
 
-# Ensure the model is loaded on the CPU
+# Move the model to the CPU and set it to evaluation mode
 model.to(device)
-model.eval()  # Set the model to evaluation mode
+model.eval()
 
 # Load the tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-# Load label mappings (assuming they're saved in .joblib format)
-label2id = joblib.load('model/label2id.joblib')
-id2label = joblib.load('model/id2label.joblib')
+# Load label mappings (assuming they are saved using torch.save as .pth)
+label2id = torch.load('model/label2id.pth')
+id2label = torch.load('model/id2label.pth')
 
 def transformerModel(text):
     # Tokenize input text using the same tokenizer used during training
@@ -41,7 +41,7 @@ def transformerModel(text):
     return predicted_label
 
 def blstm(text):
-    return 9
+    return -1
 
 # API route to predict based on input text
 @app.route('/predict', methods=['POST'])
