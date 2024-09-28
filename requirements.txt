@@ -3,3 +3,4 @@ joblib
 torch
 transformers
 gunicorn
+nltk

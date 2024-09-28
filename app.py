@@ -3,10 +3,12 @@ import joblib
 import torch
 from transformers import BertTokenizer
 
+from model2 import transformerModel02
+
 app = Flask(__name__)
 
 # Set the device to CPU because Render is a CPU-only environment
-device = torch.device('cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load the PyTorch model saved with joblib and map it to CPU
 model = joblib.load('model/bert_text_classification_model.joblib')
@@ -23,6 +25,7 @@ label2id = joblib.load('model/label2id.joblib')
 id2label = joblib.load('model/id2label.joblib')
 
 def transformerModel(text):
+    print("model 1 run")
     # Tokenize input text using the same tokenizer used during training
     inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True)
 
@@ -40,8 +43,10 @@ def transformerModel(text):
 
     return predicted_label
 
-def blstm(text):
-    return 9
+def transformerModelVersion2(text):
+    print("model 1 run")
+    predicted_label = transformerModel02(text)
+    return predicted_label
 
 # API route to predict based on input text
 @app.route('/predict', methods=['POST'])
@@ -57,7 +62,7 @@ def predict():
     if model_type == 1:
         predicted_label = transformerModel(text)
     else:
-        predicted_label = blstm(text)
+        predicted_label = transformerModelVersion2(text)
 
     return jsonify({
         'text': text,

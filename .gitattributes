@@ -2,3 +2,4 @@
 *.onnx filter=lfs diff=lfs merge=lfs -text
 model/bert_text_classification_model.joblib filter=lfs diff=lfs merge=lfs -text
 *.pth filter=lfs diff=lfs merge=lfs -text
+model/model02/model2.joblib filter=lfs diff=lfs merge=lfs -text
